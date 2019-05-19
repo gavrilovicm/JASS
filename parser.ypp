@@ -1,0 +1,63 @@
+%{
+#include<iostream>
+#include<cstdlib>
+#include<string>
+
+extern int yylex();
+
+void yyerror(std::string s){
+	std::cerr << "Greska: " << s << std::endl;
+	exit(EXIT_FAILURE);
+}
+
+%}
+
+%union{
+	int int_type;
+}
+
+%left '+' '-'
+%left '*' '/'
+%type<int_type> E
+%token<int_type> num_tok
+
+%%
+
+Program
+	: Niz_linija
+	;
+
+Niz_linija
+	: Niz_linija wLinija
+	| wLinija
+	;
+
+wLinija
+	: Linija '\n'
+	;
+
+Linija
+	: E {/* izraz */}
+	;
+
+E
+	: E '+' E {}
+	| E '-' E {}
+	| E '*' E {}
+	| E '/' E {}
+	| '(' E ')' {
+		$$ = $2;
+	}
+	| num_tok {
+		$$ = $1;
+		std::cout << $$ << std::endl;
+	}
+	;
+
+
+%%
+
+int main(){
+	yyparse();
+	exit(EXIT_SUCCESS);
+}
