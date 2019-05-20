@@ -1,0 +1,2 @@
+# command which reclassifies .ypp files to be seen as .y (Yacc) files
+*.ypp linguist-language=Yacc
