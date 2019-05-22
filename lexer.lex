@@ -3,6 +3,7 @@
 %option noyywrap
 %{
 #include<iostream>
+#include<string.h>
 
 
 
@@ -10,7 +11,9 @@
 %}
 
 %%
-
+clear {
+	return clear_tok;
+}
 [()%+*/\n-] {
 	return *yytext;
 }
@@ -19,7 +22,7 @@
 	yylval.int_type = atoi(yytext);
 	return num_tok;
 }
-
+[ \t] {}
 . {
 	std::cerr << "Nepoznat token: " << *yytext << std::endl;
 	exit(EXIT_FAILURE);

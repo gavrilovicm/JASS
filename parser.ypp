@@ -24,6 +24,7 @@ std::string* username;
 
 %type<int_type> E
 %token<int_type> num_tok
+%token clear_tok
 
 %%
 
@@ -47,6 +48,7 @@ wLinija
 
 Linija
 	: E {std::cout << $1 << std::endl;}
+	| clear_tok {clear();}
 	;
 
 E
@@ -66,23 +68,13 @@ E
 %%
 
 int main(){
-	
-//	register struct passwd *pw;
-//	register uid_t uid;
-//
-//	uid = geteuid();
-//	pw = getpwuid(uid);
-//
-//	if (pw){
-//		username = new std::string(pw->pw_name);
-//	}else{
-//		username = new std::string("anonimus");
-//	}
-//	std::cout << *username << ":->";
+
+	clear();
 
 	username = getuserinfo();
 
 	std::cout << *username << ":->";
+
 
 	yyparse();
 	delete username;
