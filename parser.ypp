@@ -2,6 +2,7 @@
 #include<iostream>
 #include<cstdlib>
 #include<string>
+#include"userinfo.hpp"
 
 extern int yylex();
 
@@ -10,6 +11,7 @@ void yyerror(std::string s){
 	exit(EXIT_FAILURE);
 }
 
+std::string* username;
 %}
 
 %union{
@@ -35,7 +37,12 @@ Niz_linija
 	;
 
 wLinija
-	: Linija '\n'
+	: Linija '\n'{
+		std::cout << *username << ":->";
+	}
+	| '\n'{
+		std::cout << *username << ":->";
+	}
 	;
 
 Linija
@@ -59,6 +66,25 @@ E
 %%
 
 int main(){
+	
+//	register struct passwd *pw;
+//	register uid_t uid;
+//
+//	uid = geteuid();
+//	pw = getpwuid(uid);
+//
+//	if (pw){
+//		username = new std::string(pw->pw_name);
+//	}else{
+//		username = new std::string("anonimus");
+//	}
+//	std::cout << *username << ":->";
+
+	username = getuserinfo();
+
+	std::cout << *username << ":->";
+
 	yyparse();
+	delete username;
 	exit(EXIT_SUCCESS);
 }

@@ -1,9 +1,12 @@
 TARGET = jass
 CXX = g++
-CXXFLAGS = -Wall -Wextra -std=c++14
+CXXFLAGS = -Wall -Wextra -std=c++17
 
-$(TARGET) : parser.tab.o lex.yy.o
+$(TARGET) : parser.tab.o lex.yy.o userinfo.o
 	$(CXX) $(CXXFLAGS) -o $@ $^
+
+userinfo.o : userinfo.cpp userinfo.hpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 parser.tab.o : parser.tab.cpp parser.tab.hpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
