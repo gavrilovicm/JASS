@@ -11,11 +11,11 @@
 
 %%
 
-[()+*/\n-] {
+[()%+*/\n-] {
 	return *yytext;
 }
 
-(-)?([0-9]|[1-9][0-9]+) {
+([0-9]|[1-9][0-9]+) {
 	yylval.int_type = atoi(yytext);
 	return num_tok;
 }

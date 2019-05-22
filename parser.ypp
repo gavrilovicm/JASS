@@ -17,7 +17,9 @@ void yyerror(std::string s){
 }
 
 %left '+' '-'
-%left '*' '/'
+%left '*' '/' '%'
+%left UNMIN
+
 %type<int_type> E
 %token<int_type> num_tok
 
@@ -37,24 +39,23 @@ wLinija
 	;
 
 Linija
-	: E {/* izraz */}
+	: E {std::cout << $1 << std::endl;}
 	;
 
 E
-	: E '+' E {}
-	| E '-' E {}
-	| E '*' E {}
-	| E '/' E {}
+	: E '+' E {$$ = $1 + $3;}
+	| E '-' E {$$ = $1 - $3;}
+	| E '*' E {$$ = $1 * $3;}
+	| E '/' E {$$ = $1 / $3;}
+	| E '%' E {$$ = $1 % $3;}
 	| '(' E ')' {
 		$$ = $2;
 	}
+	| '-' E %prec UNMIN {$$ = -$2;}
 	| num_tok {
 		$$ = $1;
-		std::cout << $$ << std::endl;
 	}
 	;
-
-
 %%
 
 int main(){
