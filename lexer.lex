@@ -15,11 +15,14 @@ clear {
 	return clear_tok;
 }
 ls {
-	return list_tok;
+	return ls_tok;
+}
+pwd {
+	return pwd_tok;
 }
 (-)[a-zA-Z]+ {
 	yylval.s = yytext;
-	return list_flags_tok;
+	return ls_flags_tok;
 }
 [()%+*/\n-] {
 	return *yytext;

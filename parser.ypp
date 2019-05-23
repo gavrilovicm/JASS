@@ -27,8 +27,8 @@ std::string* username;
 
 %type<int_type> E
 %token<int_type> num_tok
-%token<s> list_flags_tok
-%token clear_tok list_tok
+%token<s> ls_flags_tok
+%token clear_tok ls_tok pwd_tok
 
 %%
 
@@ -53,7 +53,7 @@ wLinija
 Linija
 	: E {std::cout << $1 << std::endl;}
 	| clear_tok {clear();}
-	| list_tok list_flags_tok {
+	| ls_tok ls_flags_tok {
 		/* TODO - implement with system functions without system()*/
 		if (strlen($2) > 10){
 			std::cout   << "Too many flags sent.."<< std::endl;
@@ -63,7 +63,8 @@ Linija
 			system(buffer);
 		}
 	}
-	| list_tok {system("ls");}
+	| ls_tok {system("ls");}
+	| pwd_tok {system("pwd");}
 	;
 
 E
