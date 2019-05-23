@@ -20,6 +20,13 @@ ls {
 pwd {
 	return pwd_tok;
 }
+chusername {
+	return chusername_tok;
+}
+[a-zA-Z][a-zA-Z0-9]* {
+	yylval.s = yytext;
+	return id_tok;
+}
 (-)[a-zA-Z]+ {
 	yylval.s = yytext;
 	return ls_flags_tok;

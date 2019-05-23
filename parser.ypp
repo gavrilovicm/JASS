@@ -27,8 +27,8 @@ std::string* username;
 
 %type<int_type> E
 %token<int_type> num_tok
-%token<s> ls_flags_tok
-%token clear_tok ls_tok pwd_tok
+%token<s> ls_flags_tok id_tok
+%token clear_tok ls_tok pwd_tok chusername_tok
 
 %%
 
@@ -65,6 +65,9 @@ Linija
 	}
 	| ls_tok {system("ls");}
 	| pwd_tok {system("pwd");}
+	| chusername_tok id_tok {
+		username = new std::string($2);
+	}
 	;
 
 E
