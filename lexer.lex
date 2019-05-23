@@ -41,7 +41,7 @@ chusername {
 }
 [ \t] {}
 . {
-	std::cerr << "Nepoznat token: " << *yytext << std::endl;
+	std::cerr << "Unknown token: " << *yytext << std::endl;
 	exit(EXIT_FAILURE);
 }
 %%

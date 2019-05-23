@@ -6,7 +6,7 @@
 #include<cstdio>
 #include"userinfo.hpp"
 
-#define show_powerline {std::cout << *username << ":->";}
+#define show_powerline {std::cout << *username << "::" << *wdir << ":->";}
 
 extern int yylex();
 
@@ -15,6 +15,7 @@ void yyerror(std::string s){
 }
 
 std::string* username;
+std::string* wdir;
 %}
 
 %union{
@@ -98,6 +99,8 @@ int main(){
 	clear();
 
 	username = getuserinfo();
+
+	wdir = getworkingdir(username);
 
 	show_powerline
 
