@@ -9,8 +9,7 @@
 extern int yylex();
 
 void yyerror(std::string s){
-	std::cerr << "Greska: " << s << std::endl;
-	exit(EXIT_FAILURE);
+	std::cerr << "Error occurred: " << s << std::endl;
 }
 
 std::string* username;
@@ -46,6 +45,11 @@ wLinija
 		std::cout << *username << ":->";
 	}
 	| '\n'{
+		std::cout << *username << ":->";
+	}
+	| error '\n' {
+		/* TODO - show more userfriendly message */
+		std::cout << "It has come to an error. Please rephrase.." << std::endl;
 		std::cout << *username << ":->";
 	}
 	;
