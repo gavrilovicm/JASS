@@ -6,6 +6,8 @@
 #include<cstdio>
 #include"userinfo.hpp"
 
+#define show_powerline {std::cout << *username << ":->";}
+
 extern int yylex();
 
 void yyerror(std::string s){
@@ -42,15 +44,15 @@ Niz_linija
 
 wLinija
 	: Linija '\n'{
-		std::cout << *username << ":->";
+		show_powerline
 	}
 	| '\n'{
-		std::cout << *username << ":->";
+		show_powerline
 	}
 	| error '\n' {
 		/* TODO - show more userfriendly message */
 		std::cout << "It has come to an error. Please rephrase.." << std::endl;
-		std::cout << *username << ":->";
+		show_powerline
 	}
 	;
 
@@ -96,8 +98,7 @@ int main(){
 
 	username = getuserinfo();
 
-	std::cout << *username << ":->";
-
+	show_powerline
 
 	yyparse();
 	delete username;
