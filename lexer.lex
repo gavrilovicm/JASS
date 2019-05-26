@@ -11,6 +11,9 @@
 %}
 
 %%
+exit {
+	return exit_tok;
+}
 clear {
 	return clear_tok;
 }

@@ -30,7 +30,7 @@ std::string* wdir;
 %type<int_type> E
 %token<int_type> num_tok
 %token<s> ls_flags_tok id_tok
-%token clear_tok ls_tok pwd_tok chusername_tok
+%token clear_tok ls_tok pwd_tok chusername_tok exit_tok
 
 %%
 
@@ -54,6 +54,10 @@ wLinija
 		/* TODO - show more userfriendly message */
 		std::cout << "It has come to an error. Please rephrase.." << std::endl;
 		show_powerline
+	}
+	| exit_tok {
+		std::cerr << "exit" << std::endl;
+		exit(EXIT_SUCCESS);
 	}
 	;
 
