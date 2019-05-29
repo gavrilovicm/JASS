@@ -16,6 +16,7 @@ void yyerror(std::string s){
 
 std::string* username;
 std::string* wdir;
+bool matlab_mode = false;
 %}
 
 %union{
@@ -30,7 +31,7 @@ std::string* wdir;
 %type<int_type> E
 %token<int_type> num_tok
 %token<s> ls_flags_tok id_tok
-%token clear_tok ls_tok pwd_tok chusername_tok exit_tok
+%token clear_tok ls_tok pwd_tok chusername_tok exit_tok matlab_tok
 
 %%
 
@@ -56,8 +57,24 @@ wLinija
 		show_powerline
 	}
 	| exit_tok {
-		std::cerr << "exit" << std::endl;
-		exit(EXIT_SUCCESS);
+		if (matlab_mode){
+			std::cout << "Exit matlab mode."
+			<< std::endl
+			<< std::endl;
+			wdir = getworkingdir(username);
+			matlab_mode = false;
+		}else{
+			std::cerr << "exit" << std::endl;
+			exit(EXIT_SUCCESS);
+		}
+	}
+	| matlab_tok '\n' {
+		std::cout << "Matlab mode active. Please see quick start in README.md for matlab."
+		<< std::endl
+		<< std::endl;
+		wdir = new std::string("matlab-mode");
+		matlab_mode = true;
+		show_powerline
 	}
 	;
 

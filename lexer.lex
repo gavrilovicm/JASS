@@ -26,6 +26,9 @@ pwd {
 chusername {
 	return chusername_tok;
 }
+matlab {
+	return matlab_tok;
+}
 [a-zA-Z][a-zA-Z0-9]* {
 	yylval.s = yytext;
 	return id_tok;
