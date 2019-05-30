@@ -4,7 +4,8 @@
 %{
 #include<iostream>
 #include<cstring>
-
+#include"matrix.hpp"
+#include<vector>
 
 
 #include"parser.tab.hpp"
@@ -37,13 +38,17 @@ matlab {
 	yylval.s = yytext;
 	return ls_flags_tok;
 }
-[()%+*/\n-] {
-	return *yytext;
-}
 
 ([0-9]|[1-9][0-9]+) {
 	yylval.int_type = atoi(yytext);
 	return num_tok;
+}
+([0-9]|[1-9][0-9]+)(\.([0-9]+))? {
+	yylval.double_type = atof(yytext);
+	return d_num_tok;
+}
+[(),%+[\];*/\n-] {
+	return *yytext;
 }
 [ \t] {}
 . {

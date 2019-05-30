@@ -2,9 +2,11 @@
 #include<iostream>
 #include<cstdlib>
 #include<string>
+#include<vector>
 #include<cstring>
 #include<cstdio>
 #include"userinfo.hpp"
+#include"matrix.hpp"
 
 #define show_powerline {std::cout << *username << "::" << *wdir << ":->";}
 
@@ -21,7 +23,10 @@ bool matlab_mode = false;
 
 %union{
 	int int_type;
+	double double_type;
 	char* s;
+	Matrix* matrix_type;
+	std::vector<double>* p_vector;
 }
 
 %left '+' '-'
@@ -29,6 +34,10 @@ bool matlab_mode = false;
 %left UNMIN
 
 %type<int_type> E
+%type<double_type> number
+%type<matrix_type> matlab_line array_rows
+%type<p_vector> array_num row
+%token<double_type> d_num_tok
 %token<int_type> num_tok
 %token<s> ls_flags_tok id_tok
 %token clear_tok ls_tok pwd_tok chusername_tok exit_tok matlab_tok
@@ -69,11 +78,13 @@ wLinija
 		}
 	}
 	| matlab_tok '\n' {
-		std::cout << "Matlab mode active. Please see quick start in README.md for matlab."
-		<< std::endl
-		<< std::endl;
-		wdir = new std::string("matlab-mode");
-		matlab_mode = true;
+		if (!matlab_mode){
+			std::cout << "Matlab mode active. Please see quick start in README.md for matlab."
+			<< std::endl
+			<< std::endl;
+			wdir = new std::string("matlab-mode");
+			matlab_mode = true;
+		}
 		show_powerline
 	}
 	;
@@ -97,6 +108,17 @@ Linija
 		delete username;
 		username = new std::string($2);
 	}
+	| matlab_line {
+		if (!matlab_mode){
+			std::cout << "Matlab mode active. Please see quick start in README.md for matlab."
+			<< std::endl
+			<< std::endl;
+			wdir = new std::string("matlab-mode");
+			matlab_mode = true;
+		}
+		std::cout << *$1 << std::endl;
+		delete $1;
+	}
 	;
 
 E
@@ -113,6 +135,50 @@ E
 		$$ = $1;
 	}
 	;
+matlab_line
+	: '[' array_rows ']' {
+		$$ = $2;
+	}
+	;
+
+array_rows
+	: array_rows ';' row {
+		$$->add_to_matrix(*$3);
+		delete $3;
+	}
+	| row {
+		Matrix* m = new Matrix();
+		m->add_to_matrix(*$1);
+		$$ = m;
+	}
+	;
+
+row
+	: '[' array_num ']' {
+		$$ = $2;
+	}
+	;
+
+array_num
+	: array_num ',' number {
+		$$->push_back($3);
+	}
+	| number {
+		std::vector<double>* new_vector = new std::vector<double>();
+		new_vector->push_back($1);
+		$$ = new_vector;
+	}
+	;
+
+number
+	: num_tok {
+		$$ = $1;
+	}
+	| d_num_tok {
+		$$ = $1;
+	}
+	;
+
 %%
 
 int main(){
