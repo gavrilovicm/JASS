@@ -3,6 +3,7 @@
 #include<cstdlib>
 #include<string>
 #include<vector>
+#include<map>
 #include<cstring>
 #include<cstdio>
 #include"userinfo.hpp"
@@ -16,9 +17,22 @@ void yyerror(std::string s){
 	std::cerr << "Error occurred: " << s << std::endl;
 }
 
+bool undefined_var = false;
 std::string* username;
 std::string* wdir;
 bool matlab_mode = false;
+std::map<std::string, Matrix*> variable;
+
+void is_matlab_mode_on(){
+	if (!matlab_mode){
+		std::cout << "Matlab mode active. Please see quick start in README.md for matlab."
+		<< std::endl
+		<< std::endl;
+		wdir = new std::string("matlab-mode");
+		matlab_mode = true;
+	}
+}
+
 %}
 
 %union{
@@ -27,6 +41,7 @@ bool matlab_mode = false;
 	char* s;
 	Matrix* matrix_type;
 	std::vector<double>* p_vector;
+	std::string* string_type;
 }
 
 %left '+' '-'
@@ -35,11 +50,12 @@ bool matlab_mode = false;
 
 %type<int_type> E
 %type<double_type> number
-%type<matrix_type> matlab_line array_rows
+%type<matrix_type> T array_rows
 %type<p_vector> array_num row
 %token<double_type> d_num_tok
 %token<int_type> num_tok
 %token<s> ls_flags_tok id_tok
+%token<string_type> id_matrix_tok
 %token clear_tok ls_tok pwd_tok chusername_tok exit_tok matlab_tok
 
 %%
@@ -108,16 +124,17 @@ Linija
 		delete username;
 		username = new std::string($2);
 	}
-	| matlab_line {
-		if (!matlab_mode){
-			std::cout << "Matlab mode active. Please see quick start in README.md for matlab."
-			<< std::endl
-			<< std::endl;
-			wdir = new std::string("matlab-mode");
-			matlab_mode = true;
+	| T {
+		// this is matrix line recognition
+		is_matlab_mode_on();
+		if (!undefined_var){
+			std::cout << *$1 << std::endl;
+			delete $1;
 		}
-		std::cout << *$1 << std::endl;
-		delete $1;
+	}
+	| id_matrix_tok '=' T {
+		is_matlab_mode_on();
+		variable[*$1] = $3;
 	}
 	;
 
@@ -135,9 +152,19 @@ E
 		$$ = $1;
 	}
 	;
-matlab_line
+T
 	: '[' array_rows ']' {
 		$$ = $2;
+	}
+	| id_matrix_tok {
+		auto finder = variable.find(*$1);
+		if (finder == variable.end()){
+			std::cerr << "Variable '" << *$1 << "' is not defined." << std::endl;
+			undefined_var = true;
+		}else{
+			$$ = new Matrix(*finder->second);
+			undefined_var = false;
+		}
 	}
 	;
 
