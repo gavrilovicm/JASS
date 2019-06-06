@@ -34,8 +34,9 @@ std::ostream& operator<<(std::ostream& out, Matrix m){
 		}
 		out << p[i][j] << ']';
 		out << std::endl;
+		if (i == n-2) out << ' ';
 	}
-	out << " [";
+	out << '[';
 	for (j = 0; j<k-1; ++j){
 		out << p[i][j] << ", ";
 	}
